@@ -1,0 +1,27 @@
+id: 3aa3e9a3-5c3a-4b74-9e2f-1fd7b1b9d9a1
+title: PsExec Service Installed (PSEXESVC)
+description: Detects service installation events for PsExec service used in lateral movement and ransomware staging.
+author: Cliffton Belcher
+date: 2025-08-20
+status: experimental
+level: high
+logsource:
+    product: windows
+    service: system
+    definition: 'Event ID 7045 - A service was installed in the system'
+detection:
+    selection:
+        EventID: 7045
+        ImagePath|contains|all:
+      - "\\psexesvc.exe"
+    condition: selection
+falsepositives:
+  - Legitimate admin use of PsExec by IT operations
+fields:
+  - ServiceName
+  - ImagePath
+  - User
+  - ComputerName
+references:
+- https://attack.mitre.org/techniques/T1570/
+- https://attack.mitre.org/techniques/T1003/
