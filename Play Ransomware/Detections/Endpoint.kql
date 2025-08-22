@@ -1,0 +1,18 @@
+// Detect WinRAR archiving followed by WinSCP execution (same account/host)
+let rar_execs =
+  DeviceProcessEvents
+  | where Timestamp > ago(14d)
+  | where tolower(FileName) in ("winrar.exe", "rar.exe")
+  | project Hostname=DeviceName, Account=AccountName, TimeRar=Timestamp, RarProcId=ProcessId,
+      RarCmd=ProcessCommandLine;
+let winscp_execs =
+    DeviceProcessEvents
+    | where Timestamp > ago(14d)
+    | where tolower(FileName) == "winscp.exe"
+    | project Hostname=DeviceName, Account=AccountName, TimeSCP=Timestamp, ScpProcId=ProcessId,
+    ScpCmd=ProcessCommandLine;
+rar_execs
+    | join kind=inner (winscp_execs) on Hostname, Account
+    | where TimeSCP between (TimeRar .. TimeRar + 45m)
+    | extend RarRisk = iif(RarCmd has " a " or RarCmd has " -m5" or RarCmd has " -hp" or RarCmd contains " -v", 1, 0)
+    | project TimeRar, TimeSCP, Hostname, Account, RarCmd, ScpCmd, RarRisk
