@@ -1,0 +1,26 @@
+title: Suspicious VPN login with potential Rhysida access
+id: rhysida-vpn-access
+status: experimental
+description: Detects VPN logins using valid accounts from unusual geolocations or outside MFA flow.
+author: you
+references:
+  - AA23-319A #StopRansomware: Rhysida Ransomware advisory
+tags:
+  - attack.t1078
+logsource:
+  category: authentication
+  product: vpn
+detection:
+  selection:
+    SourceGeoLocation|not_in:
+      - 'Expected country'
+    LDAPUsername|exists: true
+  condition: selection
+fields:
+  - Timestamp
+  - Username
+  - SourceIP
+  - SourceGeoLocation
+falsepositives:
+  - Traveling users
+level: medium
