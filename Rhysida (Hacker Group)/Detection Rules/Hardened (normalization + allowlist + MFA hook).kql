@@ -1,0 +1,14 @@
+let AllowedCountries = dynamic(["United States", "Canada"]);  // <-- set your allowlist
+SigninLogs
+| where TimeGenerated >= ago(7d)
+| where ResultType == 0   // success
+| extend Username = coalesce(UserPrincipalName, tostring(parse_json(Identity)["UPN"]))
+| extend SourceIP = IPAddress
+| extend Country = tostring(LocationDetails.countryOrRegion)
+| extend Country = iif(isempty(Country), tostring(Location), Country)
+// MFA normalization: treat "mfa_satisfied" states as OK
+| extend mfa_ok = iff(ConditionalAccessStatus == "mfa_satisfied" or ConditionalAccessStatus == "success", true, false)
+| where isnotempty(Username) and isnotempty(SourceIP) and isnotempty(Country)
+| where Country !in (AllowedCountries)   // outside allowed geos
+| project Timestamp=TimeGenerated, Username, SourceIP, SourceGeoLocation=Country, mfa_ok
+| order by Timestamp desc
