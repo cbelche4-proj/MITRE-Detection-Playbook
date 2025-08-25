@@ -1,0 +1,4 @@
+index=vpn_logs action=success
+| where geo_location!="HomeCountry"
+| where mfa="false"
+| table _time, user, src_ip, geo_location
