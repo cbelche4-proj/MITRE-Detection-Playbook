@@ -1,0 +1,27 @@
+title: Possible Rhysida Ransomware File Encryption
+id: rhysida-t1486-encryption
+status: experimental
+description: Detects high-volume file writes/renames consistent with ransomware encryption activity.
+author: cliff.bell
+tags:
+  - attack.t1486
+logsource:
+  category: file_access
+  product: windows
+detection:
+  selection:
+    EventID: 4663
+    AccessMask: '0x2'        # write access
+    ObjectType: 'File'
+    ObjectName|endswith:
+      - '.rhysida'            # known Rhysida extension
+      - '.encrypted'          # placeholder, adapt to campaign
+  timeframe: 1m
+  condition: selection | count(ObjectName) by SubjectUserName > 50
+fields:
+  - SubjectUserName
+  - ObjectName
+  - ProcessName
+falsepositives:
+  - Bulk file renames during migration/patching
+level: high
