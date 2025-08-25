@@ -1,5 +1,5 @@
 SigninLogs
 | where ResultDescription == "Success"
-| where Location !in ("HomeCountry")
+| where Location !in ("United States")
 | where ConditionalAccessStatus != "mfa_succeeded"
 | project TimeGenerated, UserPrincipalName, IPAddress, Location, ConditionalAccessStatus
