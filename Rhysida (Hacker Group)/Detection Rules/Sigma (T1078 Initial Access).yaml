@@ -2,7 +2,7 @@ title: Suspicious VPN login with potential Rhysida access
 id: rhysida-vpn-access
 status: experimental
 description: Detects VPN logins using valid accounts from unusual geolocations or outside MFA flow.
-author: you
+author: Cliff.Bell
 references:
   - AA23-319A #StopRansomware: Rhysida Ransomware advisory
 tags:
