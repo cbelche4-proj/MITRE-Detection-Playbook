@@ -29,4 +29,4 @@ Caution: Different vendors name/format this field differently (boolean/strings l
 
 What: Projects only the key triage fields.
 
-Why: Fast review: when, who, from where. Use stats later if you want counts, dedup, or aggregations.
+Why: Fast review: when, who, from where. Use stats later if you want counts, dedup, or aggregations. */
