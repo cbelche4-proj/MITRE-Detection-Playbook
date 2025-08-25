@@ -2,3 +2,31 @@ index=vpn_logs action=success
 | where geo_location!="HomeCountry"
 | where mfa="false"
 | table _time, user, src_ip, geo_location
+
+/* index=vpn_logs action=success
+
+What: Searches only the VPN index and keeps successful authentications.
+
+Why: T1078 is about valid (successful) logins with stolen creds. Failures are noise here.
+
+| where geo_location!="HomeCountry"
+
+What: Keeps logins from outside your expected country.
+
+Why: Rhysida often comes from unusual geos. Out‑of‑country success is a strong anomaly.
+
+Caution: HomeCountry is a placeholder. In real data it might be "United States" or a small allowlist. Also ensure geo_location actually exists (from your VPN logs or from iplocation).
+
+| where mfa="false"
+
+What: Keeps logins without MFA.
+
+Why: MFA gaps are a common weakness exploited in valid‑account intrusions.
+
+Caution: Different vendors name/format this field differently (boolean/strings like false, 0, none, MFA not satisfied, ConditionalAccessStatus!="mfa_succeeded"). Normalize it first (see hardened version below).
+
+| table _time, user, src_ip, geo_location
+
+What: Projects only the key triage fields.
+
+Why: Fast review: when, who, from where. Use stats later if you want counts, dedup, or aggregations.
