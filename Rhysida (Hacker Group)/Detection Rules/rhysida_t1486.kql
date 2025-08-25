@@ -1,0 +1,6 @@
+DeviceFileEvents
+| where Timestamp > ago(1h)
+| where FileName endswith ".rhysida" or FileName endswith ".encrypted"
+| summarize Count = count(), Hosts = dcount(DeviceName) by InitiatingProcessFileName, AccountName, bin(Timestamp, 5m)
+| where Count > 50
+| project Timestamp, InitiatingProcessFileName, AccountName, Hosts, Count
