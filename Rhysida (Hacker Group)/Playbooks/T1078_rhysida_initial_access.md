@@ -32,7 +32,7 @@ logsource:
 detection:
   selection:
     SourceGeoLocation|not_in:
-      - 'Expected country'
+      - 'United States'
     LDAPUsername|exists: true
   condition: selection
 fields:
@@ -47,13 +47,13 @@ level: medium
 
    SigninLogs
 | where ResultDescription == "Success"
-| where Location !in ("HomeCountry")
+| where Location !in ("United States")
 | where ConditionalAccessStatus != "mfa_succeeded"
 | project TimeGenerated, UserPrincipalName, IPAddress, Location, ConditionalAccessStatus
 - SPL query.
 
   index=vpn_logs action=success
-| where geo_location!="HomeCountry"
+| where geo_location!="United States"
 | where mfa="false"
 | table _time, user, src_ip, geo_location
 - Tuning: Exempt known travel or proxy IPs; enrich with identity risk.
