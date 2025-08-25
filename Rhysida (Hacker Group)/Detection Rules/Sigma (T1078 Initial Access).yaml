@@ -13,7 +13,7 @@ logsource:
 detection:
   selection:
     SourceGeoLocation|not_in:
-      - 'Expected country'
+      - 'United States'
     LDAPUsername|exists: true
   condition: selection
 fields:
