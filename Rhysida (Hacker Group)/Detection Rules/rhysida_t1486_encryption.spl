@@ -1,0 +1,5 @@
+index=sysmon EventCode=11
+| where like(TargetFilename, "%.rhysida") OR like(TargetFilename, "%.encrypted")
+| stats count by Image, User, Computer, TargetFilename, _time
+| where count > 50
+| table _time, User, Computer, Image, count
